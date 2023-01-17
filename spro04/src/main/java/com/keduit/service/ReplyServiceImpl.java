@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.keduit.domain.Criteria;
+import com.keduit.domain.ReplyPageDTO;
 import com.keduit.domain.ReplyVO;
 import com.keduit.mapper.ReplyMapper;
 
@@ -47,6 +48,12 @@ public class ReplyServiceImpl implements ReplyService {
 	public int remove(Long rno) {
 		log.info("------deleteservice)------" + rno);
 		return mapper.delete(rno);
+	}
+
+	@Override
+	public ReplyPageDTO getListPage(Criteria cri, Long bno) {
+		log.info("------ get List Page Reply ----- " + bno);
+		return new ReplyPageDTO(mapper.getCountByBno(bno), mapper.getListWithPaging(cri, bno));
 	}
 
 }
