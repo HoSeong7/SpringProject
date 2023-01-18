@@ -303,7 +303,7 @@
 						replyService.update(reply, function(result){
 							alert(result);
 							modal.modal("hide");
-							showList(1);
+							showList(pageNum);
 						});
 					});
 					modalRemoveBtn.on("click", function(e){
@@ -311,7 +311,7 @@
 						replyService.remove(rno, function(result){
 							alert(result);
 							modal.modal("hide");
-							showList(1);
+							showList(pageNum);
 						});
 					});
 					
@@ -321,7 +321,7 @@
 					
 					function showReplyPage(replyCnt){
 						var endNum = Math.ceil(pageNum / 10.0) * 10;
-						var startNum = endNum - 9;
+						var startNum = endNum - 9;	
 						var prev = startNum != 1;
 						var next = false;
 						
@@ -336,16 +336,27 @@
 							str += "<li class='page-item'><a class='page-link' href='"+ (startNum -1) +"'>이전</a></li>";
 						}
 						for(var i = startNum; i<=endNum;i++){
-							var active = pageNum==1 ? "active" : "";
-							str += "<li class='page-item' " + active + "><a class='page-link' href='"+ i +"'>" + i + "</a></li>";
+							var active = pageNum == i ? "active" : "";
+							str += "<li class='page-item " + active + "'><a class='page-link' href='"+ i +"'>" + i + "</a></li>";
 						}
 						if(next){
 							str += "<li class='page-item'><a class='page-link' href='"+ (endNum +1) +"'>다음</a></li>";
 						}
 						str += "</ul></div>";
-						console.log(str);
+						/* console.log(str); 제대로 찍히나 확인 */
 						replyPageFooter.html(str);
 					}
+					
+					replyPageFooter.on("click", "li a" , function(e){
+						e.preventDefault();
+						
+						/* console.log("page click.....");  */
+						var targetPageNum = $(this).attr("href");
+						
+						/* console.log("targetPageNum...." + targetPageNum);  페이지 번호 찍히나 확인*/
+						pageNum = targetPageNum;
+						showList(pageNum);
+					});
 				});
 </script>
 

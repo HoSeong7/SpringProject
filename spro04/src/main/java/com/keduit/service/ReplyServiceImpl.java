@@ -4,10 +4,12 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.keduit.domain.Criteria;
 import com.keduit.domain.ReplyPageDTO;
 import com.keduit.domain.ReplyVO;
+import com.keduit.mapper.BoardMapper;
 import com.keduit.mapper.ReplyMapper;
 
 import lombok.Setter;
@@ -19,6 +21,9 @@ public class ReplyServiceImpl implements ReplyService {
 
 	@Setter(onMethod_ = @Autowired)
 	private ReplyMapper mapper;
+	
+	@Setter(onMethod_ = @Autowired)
+	private BoardMapper boardMapper;
 
 	@Override
 	public List<ReplyVO> getList(Criteria cri, Long bno) {
@@ -32,9 +37,11 @@ public class ReplyServiceImpl implements ReplyService {
 		return mapper.read(rno);
 	}
 
+	@Transactional
 	@Override
 	public int register(ReplyVO vo) {
 		log.info("------insert(service)------"+ vo);
+		boardMapper.updateReplyCnt(vo.getBno(), 1);
 		return mapper.insert(vo);
 	}
 
@@ -44,9 +51,12 @@ public class ReplyServiceImpl implements ReplyService {
 		return mapper.update(vo);
 	}
 
+	@Transactional
 	@Override
 	public int remove(Long rno) {
 		log.info("------deleteservice)------" + rno);
+		ReplyVO vo = mapper.read(rno);
+		boardMapper.updateReplyCnt(vo.getBno(), -1);
 		return mapper.delete(rno);
 	}
 
